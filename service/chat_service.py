@@ -1,0 +1,166 @@
+import json 
+import os
+import base64
+from IPython.display import Image, display
+from ollama import Client as OllamaClient
+import ollama
+from openai import AzureOpenAI
+from langchain_openai import AzureChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_ollama.llms import OllamaLLM
+
+
+class ChatService:
+    def __init__(self, config):
+        self.config = config
+
+    def chat(self, user_input, type='azure'):
+        chat_map = {
+            'azure': self.azure_chat,
+            'azure_completions': self.azure_completions_chat,
+            'gemini': self.gemini_chat,
+            'ollama': self.ollama_chat,
+            'ollama_client': self.ollama_client_chat,
+        }
+        
+        func = chat_map.get(type, self.azure_chat)
+        role_description = self.config["Base"]["CHAT_ROLE_DESCRIPTION"]
+        return func(user_input, role_description)
+
+    def azure_chat(self, user_input, role_description):
+        llm = AzureChatOpenAI(
+            openai_api_version=self.config["AzureOpenAIChat"]["VERSION"],
+            azure_deployment=self.config["AzureOpenAIChat"]["DEPLOYMENT_NAME"],
+            azure_endpoint=self.config["AzureOpenAIChat"]["END_POINT"],
+            api_key=self.config["AzureOpenAIChat"]["KEY"],
+        )
+        messages = [
+            ("system", role_description),
+            ("human", user_input),
+        ]
+        response = llm.invoke(messages)
+        return response.content
+
+
+    def azure_completions_chat_bot(self, user_input,  message_text_file="prompts/user_message_text.json"):
+        client = AzureOpenAI(
+            api_key=self.config["AzureOpenAIChat"]["KEY"],
+            api_version=self.config["AzureOpenAIChat"]["VERSION"],
+            azure_endpoint=self.config["AzureOpenAIChat"]["END_POINT"],
+        )
+        
+        with open(os.path.join(os.path.dirname(__file__), message_text_file), "r", encoding="utf-8") as f:
+            message_text = json.load(f)
+            
+        for msg in message_text:
+            if msg["role"] == "user":
+                msg["content"] =  msg["content"].replace("{user_input}", user_input)
+
+        completion = client.chat.completions.create(
+            model=self.config["AzureOpenAIChat"]["DEPLOYMENT_NAME"],
+            messages=message_text,
+            temperature=0,
+            max_tokens=800,
+            top_p=1,
+            frequency_penalty=0,
+            presence_penalty=0,
+            stop=None,
+        )
+
+        response_text = completion.choices[0].message.content
+        try:
+            response_dict = json.loads(response_text)
+        except Exception as e:
+            response_dict = {"error": "回傳內容不是合法 JSON", "raw": response_text}
+        return response_dict
+    
+    def azure_completions_chat(self, user_input, role_description):
+        client = AzureOpenAI(
+            api_key=self.config["AzureOpenAIChat"]["KEY"],
+            api_version=self.config["AzureOpenAIChat"]["VERSION"],
+            azure_endpoint=self.config["AzureOpenAIChat"]["END_POINT"],
+        )
+        
+        message_text = [
+            {
+                "role": "system",
+                "content": role_description,
+            }
+        ]
+  
+        message_text.append({"role": "user", "content": user_input})
+
+        completion = client.chat.completions.create(
+            model=self.config["AzureOpenAIChat"]["DEPLOYMENT_NAME"],
+            messages=message_text,
+            temperature=0.7,
+            max_tokens=800,
+            top_p=0.95,
+            frequency_penalty=0,
+            presence_penalty=0,
+            stop=None,
+        )
+        
+        return completion.choices[0].message.content
+
+    def gemini_chat(self, user_input, role_description):
+        llm_gemini = ChatGoogleGenerativeAI(
+            model=self.config["GeminiChat"]["MODEL_NAME"],
+            google_api_key=self.config["GeminiChat"]["KEY"]
+        )
+        messages = [
+            ("system", role_description),
+            ("human", user_input),
+        ]
+        response_gemini = llm_gemini.invoke(messages)
+        return response_gemini.content
+
+
+    def ollama_chat(self, user_input, role_description):
+        messages = [
+            ("system", role_description),
+            ("human", user_input),
+        ]
+
+        ollama_llm = OllamaLLM(model=self.config["OllamaLLM"]["MODEL_NAME"])
+        response_ollama = ollama_llm.invoke(messages)
+
+        return response_ollama
+        
+        
+    def ollama_client_chat(self, user_input, role_description):
+        client = OllamaClient(host=self.config["OllamaLLM"]["OLLAMA_CLIENT"])
+        response = client.chat(
+            model=self.config["OllamaLLM"]["MODEL_NAME"],
+            messages=[
+                {
+                    "role": "system",
+                    "content": role_description,
+                },
+                {
+                    "role": "user",
+                    "content": user_input,
+                },
+            ],
+        )
+        return response["message"]["content"]
+
+    @staticmethod
+    def ollama_client_image_chat(user_input, config):
+        def image_to_base64(image_path):
+            with open(image_path, "rb") as image_file:
+                encoded_string = base64.b64encode(image_file.read()).decode("utf-8")
+            return encoded_string
+
+        image_file_path = "road.png"
+        base64_image = image_to_base64(image_file_path)
+
+        response = ollama.chat(
+            model=config["GeminiChat"]["MODEL_NAME"],
+            messages=[
+                {"role": "user", "content": user_input, "images": [base64_image]}
+            ],
+        )
+        display(Image(filename=image_file_path))
+        return response["message"]["content"]
+

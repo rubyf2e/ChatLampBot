@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link rel="stylesheet" href="{{url_for('static', filename='css/light_style.css')}}" />
+  <style>
+    #azureTranslateContainer {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 8px 0;
+      min-width: 220px;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    #azureTranslateContainer p {
+      margin: 0 0 4px 0;
+      font-size: 1.08em;
+      color: #222;
+    }
+
+    #azureTranslateContainer .audio-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    #azureTranslateModalOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.35);
+      z-index: 1000;
+      display: block;
+      opacity: 1;
+      transition: opacity 0.2s;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <input type="radio" name="mood" id="positive" value="positive" hidden>
+  <input type="radio" name="mood" id="neutral" value="neutral" checked hidden>
+  <input type="radio" name="mood" id="negative" value="negative" hidden>
+
+  <div class="scene">
+    <div class="container">
+      <div class="row-box">
+        <div class="row" id="moodTextBox">
+          <p class="label">現在的情緒：<span id="moodText"></span></p>
+        </div>
+        <div class="row">
+          <p class="label">
+          <div id="input_data"></div>
+          </p>
+        </div>
+        <div class="row" style="align-items: flex-end; gap: 10px;">
+          <select id="model-select" name="model"
+            style="padding:6px 10px; border-radius:6px; border:1px solid #d0d0d0; font-size:1em;">
+            <option value="azure">Azure</option>
+            <option value="azure_completions">Azure Completions</option>
+            <option value="gemini">Gemini</option>
+            <option value="ollama">Ollama</option>
+            <option value="ollama_client">Ollama Client</option>
+          </select>
+          <input type="text" id="message" name="message" placeholder="Enter your message" style="flex:1;" />
+          <button id="submit" type="button">Send</button>
+        </div>
+        <div class="row">
+          <div id="lampadario_box">
+            <div id="lampadario">
+              <input id="lampadario_on" type="radio" name="switch" value="on" />
+              <input id="lampadario_off" type="radio" name="switch" value="off" checked="checked" />
+              <label for="switch"></label>
+              <div id="filo"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div id="lampadina">
+            <div id="sorpresa">
+              <div id="footer">歡迎跟我聊天，這裡的燈會隨著聊天氣氛改變喔～</div>
+              <div id="shadow">歡迎跟我聊天，這裡的燈會隨著聊天氣氛改變喔～</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <!-- Modal & Overlay -->
+          <div id="azureTranslateModalOverlay" style="display:none;"></div>
+          <!-- 觸發燈箱按鈕 -->
+          <button id="openAzureModal" type="button" style="margin-bottom:8px;">顯示翻譯燈箱</button>
+
+          <div id="azureTranslateContainer" class="modal" style="display:none;">
+            <button class="modal-close" id="closeAzureModal">×</button>
+            <p id="azureTranslateText"></p>
+            <div class="audio-row">
+              <audio id="azureTranslateAudioJa"></audio>
+              <audio id="azureTranslateAudioEn"></audio>
+              <audio id="azureTranslateAudioZh-Hant"></audio>
+              <button id="azureTranslateAudioVoiceZh-Hant">中文發音</button>
+              <button id="azureTranslateAudioVoiceJa">日本發音</button>
+              <button id="azureTranslateAudioVoiceEn">英文發音</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <label for="positive" class="light positive"></label>
+    <label for="neutral" class="light neutral"></label>
+    <label for="negative" class="light negative"></label>
+    <div class="bg-gradient positive"></div>
+    <div class="bg-gradient neutral"></div>
+    <div class="bg-gradient negative"></div>
+  </div>
+
+  <script src="//unpkg.com/jquery"></script>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script>
+    const socket = io("http://127.0.0.1:5004");
+    // const apiUrl = "http://localhost:5000";
+    const apiUrl = "/api";
+    const staticUrl = "{{ url_for('static', filename='') }}";
+    const langs = ["Zh-Hant", "Ja", "En"];
+  </script>
+  <script src="{{url_for('static', filename='js/light_main.js')}}"></script>
+</body>
+
+</html>

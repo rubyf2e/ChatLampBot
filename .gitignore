@@ -1,0 +1,28 @@
+
+*.pyc
+__pycache__/
+.env
+.venv/
+venv/
+
+env/
+.pytest_cache/
+.coverage
+htmlcov/
+instance/
+.webassets-cache
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+static/speech/
+.azure/config

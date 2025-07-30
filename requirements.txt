@@ -1,0 +1,16 @@
+line-bot-sdk
+flask
+configparser
+azure-ai-translation-text
+azure-cognitiveservices-speech
+librosa
+azure-ai-language-conversations
+flask-socketio
+azure-ai-textanalytics
+openai
+pydub
+langchain_openai
+langchain_ollama
+langchain_google_genai
+ipython
+python-dotenv

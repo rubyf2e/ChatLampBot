@@ -46,8 +46,10 @@ light_chat_service = LightChatService(azure_analyze_conversation_service, light_
 
 @app.route("/", methods=["GET"])
 def index():
-    return render_template("index.html")
-
+    AUDIO_URL = config["Base"]["AUDIO_URL"]
+    API_URL = config["Base"]["API_URL"]
+    WEBHOOK_URL = config["Base"]["WEBHOOK_URL"]
+    return render_template("index.html", AUDIO_URL=AUDIO_URL, API_URL=API_URL, WEBHOOK_URL=WEBHOOK_URL)
 
 @app.route("/api/light", methods=["POST"])
 def light():

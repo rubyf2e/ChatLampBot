@@ -16,10 +16,11 @@ class AzureAnalyzeConversationService:
         self.KEY = config["AzureCLU"]["KEY"]
         self.PROJECT_NAME = config["AzureCLU"]["PROJECT_NAME"]
         self.DEPLOYMENT_NAME = config["AzureCLU"]["DEPLOYMENT_NAME"]
-        self.client = ConversationAnalysisClient(self.ENDPOINT, AzureKeyCredential(self.KEY))
-        
+
 
     def analyze_conversation(self, user_input):
+        self.client = ConversationAnalysisClient(self.ENDPOINT, AzureKeyCredential(self.KEY))
+
         with self.client:
             query = user_input
             result = self.client.analyze_conversation(

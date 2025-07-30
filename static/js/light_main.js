@@ -42,14 +42,11 @@ $(function () {
     $("#azureTranslateAudioVoice" + lang).click(function () {
       var $audio = $("#azureTranslateAudio" + lang);
       lang_name = lang === "Zh-Hant" ? "zh-Hant" : lang;
-      console.log("使用語言:", lang_name); // 確保中文繁體語音正確
       $audio.attr("src", "");
       $audio.attr(
         "src",
-        staticUrl + "/speech_" + lang_name + ".mp3?a=" + Math.random()
+        audioUrl + "/speech_" + lang_name + ".mp3?a=" + Math.random()
       );
-      console.log("/speech_" + lang_name + ".mp3?a=");
-      console.log("#azureTranslateAudio" + lang_name);
       $audio[0].load();
       $audio[0].play();
     });

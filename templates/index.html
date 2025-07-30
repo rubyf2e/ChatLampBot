@@ -3,47 +3,18 @@
 
 <head>
   <meta charset="utf-8" />
-  <title></title>
+  <title>ChatLampBot 智慧燈多模語音互動機器人</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="ChatLampBot 智慧燈多模語音互動機器人" />
+  <!-- Open Graph for social media sharing -->
+  <meta property="og:title" content="ChatLampBot 智慧燈多模語音互動機器人" />
+  <meta property="og:description" content="ChatLampBot 智慧燈多模語音互動機器人" />
+  <meta property="og:image" content="{{ url_for('static', filename='favicon.png') }}" />
+  <meta property="og:type" content="website" />
 
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
   <link rel="stylesheet" href="{{url_for('static', filename='css/light_style.css')}}" />
-  <style>
-    #azureTranslateContainer {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 8px;
-      padding: 8px 0;
-      min-width: 220px;
-      max-width: 100%;
-      box-sizing: border-box;
-    }
-
-    #azureTranslateContainer p {
-      margin: 0 0 4px 0;
-      font-size: 1.08em;
-      color: #222;
-    }
-
-    #azureTranslateContainer .audio-row {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    #azureTranslateModalOverlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.35);
-      z-index: 1000;
-      display: block;
-      opacity: 1;
-      transition: opacity 0.2s;
-    }
-  </style>
 
 </head>
 

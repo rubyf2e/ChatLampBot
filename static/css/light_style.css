@@ -10,6 +10,14 @@ body {
   height: 100%;
 }
 
+#model-select {
+  font-size: 16px;
+  width: 160px;
+  height: 30px;
+  border-radius: 6px;
+  border: 1px solid #d0d0d0;
+}
+
 .scene {
   height: 100vh;
   display: flex;
@@ -608,6 +616,7 @@ button#openAzureModal {
   filter: drop-shadow(30px 25px 0 currentColor) drop-shadow(60px 0 0 currentColor) drop-shadow(120px 0 0 currentColor);
   clip-path: inset(0 100% 0 0);
   animation: l12 2s infinite steps(7);
+  padding: 1rem;
 }
 
 #loading:before {
@@ -625,5 +634,180 @@ button#openAzureModal {
 @keyframes l12 {
   100% {
     clip-path: inset(0 -30px 0 0)
+  }
+}
+
+#weather {
+  width: 100%;
+  padding: 0.5rem 0;
+  display: none;
+}
+
+.weather-box {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 20px;
+}
+
+.partly-cloudy {
+  width: 80px;
+  height: 40px;
+  background:
+    radial-gradient(circle 25px at top right, #ffd738 40%, #0000),
+    #4dbefa;
+  position: relative;
+  overflow: hidden;
+}
+
+.partly-cloudy:before,
+.partly-cloudy:after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: -40px;
+  width: 36px;
+  height: 20px;
+  --c: radial-gradient(farthest-side, #fff 96%, #0000);
+  background:
+    var(--c) 100% 100% /30% 60%,
+    var(--c) 70% 0 /50% 100%,
+    var(--c) 0 100% /36% 68%,
+    var(--c) 27% 18% /26% 40%,
+    linear-gradient(#fff 0 0) bottom/67% 58%;
+  background-repeat: no-repeat;
+  animation: l10 2s linear infinite;
+}
+
+.partly-cloudy:after {
+  top: 15px;
+  --l: 200%;
+}
+
+@keyframes l10 {
+  100% {
+    left: var(--l, 105%)
+  }
+}
+
+.sunny {
+  width: 60px;
+  aspect-ratio: 1;
+  display: grid;
+  border-radius: 50%;
+  background: radial-gradient(circle 15px, #ffd738 90%, #0000);
+  filter: drop-shadow(0px 0px 1px #ffd738);
+  animation: l2 1s infinite alternate linear;
+}
+
+.sunny::before,
+.sunny::after {
+  content: "";
+  grid-area: 1/1;
+  border-radius: 50%;
+  --g: no-repeat linear-gradient(#ffd738 0 0) 50%;
+  background:
+    var(--g)/100% 5px,
+    var(--g)/5px 100%;
+  -webkit-mask: radial-gradient(farthest-side, #0000 60%, #000 61%);
+}
+
+.sunny::after {
+  transform: rotate(45deg);
+}
+
+@keyframes l2 {
+  100% {
+    filter: drop-shadow(0px 0px 20px #ffd738)
+  }
+}
+
+.rain {
+  width: 80px;
+  height: 40px;
+  background: #4dbefa;
+  position: relative;
+  overflow: hidden;
+  animation: l9-0 1.5s infinite steps(10);
+}
+
+.rain:before,
+.rain:after {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  --rad: radial-gradient(1px 4px, #eee 92%, #0000);
+  background: var(--rad) 20% 0, var(--rad) 70% 7%;
+  background-size: var(--w, 20px) var(--h, 18px);
+  animation: l9-1 0.2s linear infinite;
+  transform: skew(-10deg);
+}
+
+.rain:after {
+  --h: 12px;
+  --w: 16px;
+  animation-duration: 0.3s;
+}
+
+@keyframes l9-0 {
+
+  0%,
+  15%,
+  20%,
+  30%,
+  100% {
+    background: #4dbefa
+  }
+
+  10%,
+  22% {
+    background: #7accf7
+  }
+}
+
+@keyframes l9-1 {
+  100% {
+    transform: skew(-10deg) translateY(var(--h, 18px))
+  }
+}
+
+.model-select-box {
+  align-items: flex-end;
+  gap: 10px;
+}
+
+@media (max-width: 600px) {
+  #loading {
+    padding: 0.5rem;
+    width: calc(6 * 15px);
+    height: 25px;
+    margin-top: -50px;
+  }
+
+  #loading:before {
+    width: 15px;
+    height: 12.5px;
+  }
+
+  .model-select-box {
+    display: block;
+    width: 100%;
+    margin: 12px 0;
+  }
+
+  #weather {
+    width: 100%;
+  }
+
+  #message {
+    width: 100%;
+  }
+
+  #footer {
+    bottom: 25%;
+  }
+
+  #shadow {
+    bottom: 24.5%;
   }
 }

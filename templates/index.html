@@ -35,9 +35,8 @@
           <div id="input_data"></div>
           </p>
         </div>
-        <div class="row" style="align-items: flex-end; gap: 10px;">
-          <select id="model-select" name="model"
-            style="padding:6px 10px; border-radius:6px; border:1px solid #d0d0d0; font-size:1em;">
+        <div class="row model-select-box">
+          <select id="model-select" name="model">
             <option value="azure">Azure</option>
             <option value="azure_completions">Azure Completions</option>
             <option value="gemini">Gemini</option>
@@ -59,6 +58,11 @@
         </div>
 
         <div class="row">
+          <div id="weather">
+            <div class="weather-box">
+              <div class="rain"></div>
+            </div>
+          </div>
           <div id="lampadina">
             <div id="loading"></div>
             <div id="sorpresa">

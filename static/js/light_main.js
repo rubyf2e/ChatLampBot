@@ -4,6 +4,12 @@ $(function () {
   const overlay = document.getElementById("azureTranslateModalOverlay");
   const closeModalBtn = document.getElementById("closeAzureModal");
 
+  $("#submit").prop("disabled", true);
+  $("#message").on("input", function () {
+    const hasText = $(this).val().trim().length > 0;
+    $("#submit").prop("disabled", !hasText);
+  });
+
   function showModal() {
     modal.style.display = "flex";
     overlay.style.display = "block";
@@ -101,6 +107,7 @@ function toggleLampadario(value, inputValue = "") {
 }
 
 function light() {
+  $("#submit").prop("disabled", true);
   $("#input_data").empty();
   $("#footer").empty();
   $("#shadow").empty();
@@ -180,5 +187,6 @@ function azureTranslate(message) {
     $("#azureTranslateText").html(data);
     $("#loading").hide();
     $("#azureTranslateContainer").show();
+    $("#submit").prop("disabled", false);
   });
 }

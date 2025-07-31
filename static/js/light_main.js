@@ -51,6 +51,8 @@ $(function () {
       $audio[0].play();
     });
   });
+
+  $("#loading").hide();
 });
 
 function setMood(mood) {
@@ -102,6 +104,7 @@ function light() {
   $("#input_data").empty();
   $("#footer").empty();
   $("#shadow").empty();
+  $("#loading").show();
 
   var message = $("#message").val();
   var model_select = $("#model-select").val();
@@ -175,6 +178,7 @@ function azureTranslate(message) {
   };
   $.post(apiUrl + "/azure_translate", params, function (data) {
     $("#azureTranslateText").html(data);
+    $("#loading").hide();
     $("#azureTranslateContainer").show();
   });
 }

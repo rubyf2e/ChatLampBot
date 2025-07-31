@@ -539,7 +539,7 @@ button#openAzureModal {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
   z-index: 1010;
   min-width: 320px;
-  max-width: 90vw;
+  max-width: 320px;
   padding: 32px 28px 24px 28px;
   display: flex;
   flex-direction: column;
@@ -597,4 +597,33 @@ button#openAzureModal {
   padding: 20px;
   max-width: 90%;
   width: 500px;
+}
+
+
+#loading {
+  width: calc(6*30px);
+  height: 50px;
+  display: flex;
+  color: #1e293b;
+  filter: drop-shadow(30px 25px 0 currentColor) drop-shadow(60px 0 0 currentColor) drop-shadow(120px 0 0 currentColor);
+  clip-path: inset(0 100% 0 0);
+  animation: l12 2s infinite steps(7);
+}
+
+#loading:before {
+  content: "";
+  width: 30px;
+  height: 25px;
+  --c: no-repeat radial-gradient(farthest-side, currentColor 92%, #0000);
+  background:
+    var(--c) left /70% 70%,
+    var(--c) right/20% 20%,
+    var(--c) top 0 right 15%/20% 20%,
+    var(--c) bottom 0 right 15%/20% 20%;
+}
+
+@keyframes l12 {
+  100% {
+    clip-path: inset(0 -30px 0 0)
+  }
 }

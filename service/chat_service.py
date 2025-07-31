@@ -25,7 +25,10 @@ class ChatService:
         
         func = chat_map.get(type, self.azure_chat)
         role_description = self.config["Base"]["CHAT_ROLE_DESCRIPTION"]
-        return func(user_input, role_description)
+        try:
+            return func(user_input, role_description)
+        except Exception as e:
+            return 'chat 模型需要升級，暫時無法提供服務'
 
     def azure_chat(self, user_input, role_description):
         llm = AzureChatOpenAI(
@@ -38,8 +41,12 @@ class ChatService:
             ("system", role_description),
             ("human", user_input),
         ]
-        response = llm.invoke(messages)
-        return response.content
+        
+        try:
+            response = llm.invoke(messages)
+            return response.content
+        except Exception as e:
+            return 'chat 模型需要升級，暫時無法提供服務'
 
 
     def azure_completions_chat_bot(self, user_input,  message_text_file="prompts/user_message_text.json"):
@@ -56,18 +63,23 @@ class ChatService:
             if msg["role"] == "user":
                 msg["content"] =  msg["content"].replace("{user_input}", user_input)
 
-        completion = client.chat.completions.create(
-            model=self.config["AzureOpenAIChat"]["DEPLOYMENT_NAME"],
-            messages=message_text,
-            temperature=0,
-            max_tokens=800,
-            top_p=1,
-            frequency_penalty=0,
-            presence_penalty=0,
-            stop=None,
-        )
+        try:
+            completion = client.chat.completions.create(
+                model=self.config["AzureOpenAIChat"]["DEPLOYMENT_NAME"],
+                messages=message_text,
+                temperature=0,
+                max_tokens=800,
+                top_p=1,
+                frequency_penalty=0,
+                presence_penalty=0,
+                stop=None,
+            )
 
-        response_text = completion.choices[0].message.content
+            response_text = completion.choices[0].message.content
+        
+        except Exception as e:
+            return 'chat 模型需要升級，暫時無法提供服務'
+        
         try:
             response_dict = json.loads(response_text)
         except Exception as e:
@@ -90,18 +102,22 @@ class ChatService:
   
         message_text.append({"role": "user", "content": user_input})
 
-        completion = client.chat.completions.create(
-            model=self.config["AzureOpenAIChat"]["DEPLOYMENT_NAME"],
-            messages=message_text,
-            temperature=0.7,
-            max_tokens=800,
-            top_p=0.95,
-            frequency_penalty=0,
-            presence_penalty=0,
-            stop=None,
-        )
+        try:
+            completion = client.chat.completions.create(
+                model=self.config["AzureOpenAIChat"]["DEPLOYMENT_NAME"],
+                messages=message_text,
+                temperature=0.7,
+                max_tokens=800,
+                top_p=0.95,
+                frequency_penalty=0,
+                presence_penalty=0,
+                stop=None,
+            )
+            
+            return completion.choices[0].message.content
         
-        return completion.choices[0].message.content
+        except Exception as e:
+            return 'chat 模型需要升級，暫時無法提供服務'
 
     def gemini_chat(self, user_input, role_description):
         llm_gemini = ChatGoogleGenerativeAI(
@@ -112,8 +128,12 @@ class ChatService:
             ("system", role_description),
             ("human", user_input),
         ]
-        response_gemini = llm_gemini.invoke(messages)
-        return response_gemini.content
+        
+        try:
+            response_gemini = llm_gemini.invoke(messages)
+            return response_gemini.content
+        except Exception as e:
+            return 'chat 模型需要升級，暫時無法提供服務'
 
 
     def ollama_chat(self, user_input, role_description):
@@ -123,27 +143,36 @@ class ChatService:
         ]
 
         ollama_llm = OllamaLLM(model=self.config["OllamaLLM"]["MODEL_NAME"])
-        response_ollama = ollama_llm.invoke(messages)
+        
+        try:
+            response_ollama = ollama_llm.invoke(messages)
+        except Exception as e:
+            return 'chat 模型需要升級，暫時無法提供服務'
 
         return response_ollama
         
         
     def ollama_client_chat(self, user_input, role_description):
         client = OllamaClient(host=self.config["OllamaLLM"]["OLLAMA_CLIENT"])
-        response = client.chat(
-            model=self.config["OllamaLLM"]["MODEL_NAME"],
-            messages=[
-                {
-                    "role": "system",
-                    "content": role_description,
-                },
-                {
-                    "role": "user",
-                    "content": user_input,
-                },
-            ],
-        )
-        return response["message"]["content"]
+        
+        try:
+            response = client.chat(
+                model=self.config["OllamaLLM"]["MODEL_NAME"],
+                messages=[
+                    {
+                        "role": "system",
+                        "content": role_description,
+                    },
+                    {
+                        "role": "user",
+                        "content": user_input,
+                    },
+                ],
+            )
+            return response["message"]["content"]
+    
+        except Exception as e:
+            return 'chat 模型需要升級，暫時無法提供服務'
 
     @staticmethod
     def ollama_client_image_chat(user_input, config):
@@ -155,12 +184,16 @@ class ChatService:
         image_file_path = "road.png"
         base64_image = image_to_base64(image_file_path)
 
-        response = ollama.chat(
-            model=config["GeminiChat"]["MODEL_NAME"],
-            messages=[
-                {"role": "user", "content": user_input, "images": [base64_image]}
-            ],
-        )
-        display(Image(filename=image_file_path))
-        return response["message"]["content"]
+        try:
+            response = ollama.chat(
+                model=config["GeminiChat"]["MODEL_NAME"],
+                messages=[
+                    {"role": "user", "content": user_input, "images": [base64_image]}
+                ],
+            )
+            display(Image(filename=image_file_path))
+            return response["message"]["content"]
+        
+        except Exception as e:
+            return 'chat 模型需要升級，暫時無法提供服務'
 

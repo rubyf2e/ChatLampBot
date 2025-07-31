@@ -1,3 +1,4 @@
+import json 
 import configparser
 from flask import Flask, request, abort, render_template
 from linebot.v3 import WebhookHandler
@@ -22,6 +23,8 @@ from service.azure_translate_service import AzureTranslateService
 from service.azure_text_analytics_service import AzureTextAnalyticsService
 from service.azure_analyze_conversation_service import AzureAnalyzeConversationService
 from service.light_chat_service import LightChatService
+from service.weather_service import WeatherService
+
 
 config = configparser.ConfigParser()
 config.read("config.ini")
@@ -37,6 +40,8 @@ azure_speech_service = AzureSpeechService(config, UPLOAD_FOLDER)
 azure_translate_service = AzureTranslateService(config)
 azure_text_analytics_service = AzureTextAnalyticsService(config)
 azure_analyze_conversation_service = AzureAnalyzeConversationService(config)
+weather_service = WeatherService(config)
+
 chat_service = ChatService(config)
 light_service = LightService(config)
 
@@ -60,8 +65,24 @@ def light():
 
         detected_language, key_phrases, sentiment, confidence_scores = azure_text_analytics_service.text_analytics(chinese_text)
         intent, entity = light_chat_service.analyze_conversation(chinese_text, model)
-        emotion = chat_service.azure_completions_chat_bot(chinese_text)
         
+        emotion_message_text_file = "prompts/emotion_user_message_text.json"
+        emotion_prompts = chat_service.get_prompts_content(emotion_message_text_file)
+        message_text = chat_service.set_prompts_content(emotion_prompts, "user", "{user_input}", chinese_text)
+        emotion = chat_service.azure_completions_chat_bot(chinese_text,  message_text)
+        
+        weather_service.set_default_opendata_cwa()
+        stations_data = weather_service.get_stations_data()
+        weather_message_text_file = "prompts/weather_user_message_text.json"
+        weather_prompts = chat_service.get_prompts_content(weather_message_text_file)
+        weather_prompts = chat_service.set_prompts_content(weather_prompts, "system", "{stations_data}", json.dumps(stations_data, ensure_ascii=False))
+        message_text = chat_service.set_prompts_content(weather_prompts, "user", "{user_input}", chinese_text)
+        weather = chat_service.azure_completions_chat_bot(chinese_text, message_text)
+        
+        if weather['is_weather_query'] == True:
+            weather['location'] = weather['location'] if weather['location'] else "臺北"
+            entity = weather_service.render_station_data(weather_service.get_station_weather(weather['location']))
+            
         data = {
             "chinese_text": chinese_text,
             "intent": intent,
@@ -70,6 +91,7 @@ def light():
             "key_phrases": key_phrases,
             "sentiment": sentiment,
             "emotion": emotion,
+            "weather": weather,
             "confidence_scores": {
                 "positive": confidence_scores.positive,
                 "neutral": confidence_scores.neutral,

@@ -26,3 +26,5 @@ Thumbs.db
 *.log
 static/speech/
 .azure/config
+service/prompts/emotion_user_message_text.json
+service/prompts/weather_user_message_text.json

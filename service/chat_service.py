@@ -1,6 +1,7 @@
 import json 
 import os
 import base64
+import re
 from IPython.display import Image, display
 from ollama import Client as OllamaClient
 import ollama
@@ -48,21 +49,27 @@ class ChatService:
         except Exception as e:
             return 'chat 模型需要升級，暫時無法提供服務'
 
+    def get_prompts_content(self, message_text_file):
+        """獲取提示內容。"""
+        with open(os.path.join(os.path.dirname(__file__), message_text_file), "r", encoding="utf-8") as f:
+            return json.load(f)
+        
 
-    def azure_completions_chat_bot(self, user_input,  message_text_file="prompts/user_message_text.json"):
+    def set_prompts_content(self, prompts, role = "user", replace = "{user_input}", user_input = "user_input"):
+        for msg in prompts:
+            if msg["role"] == role:
+                msg["content"] =  msg["content"].replace(replace, user_input)
+                
+        return prompts
+
+
+    def azure_completions_chat_bot(self, user_input, message_text):
         client = AzureOpenAI(
             api_key=self.config["AzureOpenAIChat"]["KEY"],
             api_version=self.config["AzureOpenAIChat"]["VERSION"],
             azure_endpoint=self.config["AzureOpenAIChat"]["END_POINT"],
         )
         
-        with open(os.path.join(os.path.dirname(__file__), message_text_file), "r", encoding="utf-8") as f:
-            message_text = json.load(f)
-            
-        for msg in message_text:
-            if msg["role"] == "user":
-                msg["content"] =  msg["content"].replace("{user_input}", user_input)
-
         try:
             completion = client.chat.completions.create(
                 model=self.config["AzureOpenAIChat"]["DEPLOYMENT_NAME"],

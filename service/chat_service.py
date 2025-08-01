@@ -93,21 +93,22 @@ class ChatService:
             response_dict = {"error": "回傳內容不是合法 JSON", "raw": response_text}
         return response_dict
     
-    def azure_completions_chat(self, user_input, role_description):
+    def azure_completions_chat(self, user_input, role_description, message_text=None):
         client = AzureOpenAI(
             api_key=self.config["AzureOpenAIChat"]["KEY"],
             api_version=self.config["AzureOpenAIChat"]["VERSION"],
             azure_endpoint=self.config["AzureOpenAIChat"]["END_POINT"],
         )
         
-        message_text = [
-            {
-                "role": "system",
-                "content": role_description,
-            }
-        ]
+        if message_text is None:
+            message_text = [
+                {
+                    "role": "system",
+                    "content": role_description,
+                }
+            ]
   
-        message_text.append({"role": "user", "content": user_input})
+            message_text.append({"role": "user", "content": user_input})
 
         try:
             completion = client.chat.completions.create(

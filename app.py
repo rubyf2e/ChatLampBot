@@ -83,6 +83,12 @@ def light():
             weather['location'] = weather['location'] if weather['location'] else "臺北"
             entity = weather_service.render_station_data(weather_service.get_station_weather(weather['location']))
             
+            weather_message_text_file = "prompts/weather_bot_message_text.json"
+            weather_prompts = chat_service.get_prompts_content(weather_message_text_file)
+            message_text = chat_service.set_prompts_content(weather_prompts, "user", "{stations_data}", entity)
+            entity = chat_service.azure_completions_chat(entity, '', message_text)
+
+            
         data = {
             "chinese_text": chinese_text,
             "intent": intent,

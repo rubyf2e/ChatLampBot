@@ -75,7 +75,7 @@ ChatLampBot 是一個結合 Azure OpenAI、語音合成、翻譯、天氣查詢�
    flask run
    ```
 
-4. 前端請瀏覽：http://localhost:5008
+4. 前端請瀏覽：http://127.0.0.1:5008
 
 ## CLI 指令
 

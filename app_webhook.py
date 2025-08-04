@@ -1,14 +1,20 @@
 from flask import Flask, request
 from flask_socketio import SocketIO
 import requests
+import eventlet
 import configparser
 
 
 app = Flask(__name__)
+eventlet.monkey_patch()
 socketio = SocketIO(app, cors_allowed_origins="*")
 config = configparser.ConfigParser()
 config.read("config.ini")
 API_URL = config["Base"]["API_URL"]
+
+@app.route("/", methods=["GET"])
+def index():
+    return "Chat Lamp Bot is running!"
 
 @app.route("/webhook/notify_light_state", methods=["POST"])
 def webhook_notify_light_state():
@@ -56,7 +62,7 @@ def notify_light_state(inputValue = '燈泡狀態請求已處理'):
     socketio.emit('light_state', {'state': state, 'inputValue': inputValue})
     
 if __name__ == "__main__":
-    socketio.run(app, port=5004, debug=True, host='0.0.0.0')
+    socketio.run(app, port=5004, debug=True, host='127.0.0.1')
     
     
 import command.weather

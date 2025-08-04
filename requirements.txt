@@ -14,3 +14,5 @@ langchain_ollama
 langchain_google_genai
 ipython
 python-dotenv
+gunicorn
+eventlet

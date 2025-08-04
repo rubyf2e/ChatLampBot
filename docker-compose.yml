@@ -1,0 +1,42 @@
+# Docker Compose 配置文件
+version: "3.8"
+
+services:
+  chatlampbot:
+    build: .
+    container_name: chatlampbot
+    ports:
+      - "5008:5008"
+    volumes:
+      - ./config.ini:/app/config.ini:ro
+      - ./static/speech:/app/static/speech
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=${FLASK_ENV}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:5008/"]
+      interval: 30s
+      timeout: 10s
+      retries: 1
+
+  # 可選：如需要 webhook 服務，可同時啟動
+  webhook:
+    build: .
+    container_name: chatlampbot-webhook
+    ports:
+      - "5004:5004"
+    volumes:
+      - ./config.ini:/app/config.ini:ro
+    environment:
+      - FLASK_APP=app_webhook.py
+      - FLASK_ENV=${FLASK_ENV}
+    command: ["python", "app_webhook.py"]
+    restart: unless-stopped
+    depends_on:
+      - chatlampbot
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:5004/"]
+      interval: 30s
+      timeout: 10s
+      retries: 1

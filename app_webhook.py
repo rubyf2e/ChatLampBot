@@ -1,12 +1,13 @@
+import eventlet
+eventlet.monkey_patch()
+
 from flask import Flask, request
 from flask_socketio import SocketIO
 import requests
-import eventlet
 import configparser
 
 
 app = Flask(__name__)
-eventlet.monkey_patch()
 socketio = SocketIO(app, cors_allowed_origins="*")
 config = configparser.ConfigParser()
 config.read("config.ini")

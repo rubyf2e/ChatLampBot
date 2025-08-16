@@ -30,7 +30,7 @@ class WeatherService:
     def _get_opendata_cwa(self, target):
         """從中央氣象局 API 取得資料。"""
         parameters = {'Authorization': self.AUTHORIZATION}
-        request = requests.get(getattr(self, target), params=parameters)
+        request = requests.get(getattr(self, target), params=parameters, verify=False)
         content_type = request.headers['Content-Type']
         if request.status_code != 200:
             raise Exception(f"Error fetching data: {request.status_code} - {request.text}")

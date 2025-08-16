@@ -547,7 +547,6 @@ button#openAzureModal {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
   z-index: 1010;
   min-width: 320px;
-  max-width: 320px;
   padding: 32px 28px 24px 28px;
   display: flex;
   flex-direction: column;
@@ -559,6 +558,7 @@ button#openAzureModal {
 
 #azureTranslateText {
   color: #000000;
+  width: 100%;
 }
 
 @keyframes modalIn {

@@ -18,11 +18,11 @@ RUN mkdir -p static/speech
 ENV PYTHONPATH=/app
 
 # 暴露端口
-EXPOSE 5008
+EXPOSE 5003
 
 # 健康檢查
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=1 \
-    CMD curl -f http://127.0.0.1:5008/ || exit 1
+    CMD curl -f http://127.0.0.1:5003/ || exit 1
 
-# 啟動應用
-CMD ["gunicorn", "-k", "eventlet", "-w", "1", "-b", "127.0.0.1:5004", "app_webhook:app"]
+# 預設啟動主應用（可由 docker-compose 覆蓋）
+CMD ["gunicorn", "-k", "eventlet", "-w", "1", "-b", "0.0.0.0:5003", "app:app"]

@@ -2,25 +2,25 @@
 version: "3.8"
 
 services:
+  # 主要 LINE Bot 服務
   chatlampbot:
     build: .
     container_name: chatlampbot
     ports:
-      - "5008:5008"
+      - "5003:5003"
     volumes:
       - ./config.ini:/app/config.ini:ro
       - ./static/speech:/app/static/speech
     environment:
-      - FLASK_APP=app.py
-      - FLASK_ENV=${FLASK_ENV}
+      - PYTHONPATH=/app
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://127.0.0.1:5008/"]
+      test: ["CMD", "curl", "-f", "http://localhost:5003/"]
       interval: 30s
       timeout: 10s
-      retries: 1
+      retries: 3
 
-  # 可選：如需要 webhook 服務，可同時啟動
+  # Webhook/SocketIO 服務
   webhook:
     build: .
     container_name: chatlampbot-webhook
@@ -28,15 +28,25 @@ services:
       - "5004:5004"
     volumes:
       - ./config.ini:/app/config.ini:ro
+      - ./static/speech:/app/static/speech
     environment:
-      - FLASK_APP=app_webhook.py
-      - FLASK_ENV=${FLASK_ENV}
-    command: ["python", "app_webhook.py"]
+      - PYTHONPATH=/app
+    command:
+      [
+        "gunicorn",
+        "-k",
+        "eventlet",
+        "-w",
+        "1",
+        "-b",
+        "0.0.0.0:5004",
+        "app_webhook:app",
+      ]
     restart: unless-stopped
     depends_on:
       - chatlampbot
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://127.0.0.1:5004/"]
+      test: ["CMD", "curl", "-f", "http://localhost:5004/"]
       interval: 30s
       timeout: 10s
-      retries: 1
+      retries: 3

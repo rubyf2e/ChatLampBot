@@ -8,6 +8,7 @@ services:
     container_name: chatlampbot
     ports:
       - "5003:5003"
+      - "5004:5004"
     volumes:
       - ./config.ini:/app/config.ini:ro
       - ./static/speech:/app/static/speech
@@ -16,37 +17,6 @@ services:
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5003/"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  # Webhook/SocketIO 服務
-  webhook:
-    build: .
-    container_name: chatlampbot-webhook
-    ports:
-      - "5004:5004"
-    volumes:
-      - ./config.ini:/app/config.ini:ro
-      - ./static/speech:/app/static/speech
-    environment:
-      - PYTHONPATH=/app
-    command:
-      [
-        "gunicorn",
-        "-k",
-        "eventlet",
-        "-w",
-        "1",
-        "-b",
-        "0.0.0.0:5004",
-        "app_webhook:app",
-      ]
-    restart: unless-stopped
-    depends_on:
-      - chatlampbot
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5004/"]
       interval: 30s
       timeout: 10s
       retries: 3

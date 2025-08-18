@@ -9,12 +9,12 @@
   <!-- Open Graph for social media sharing -->
   <meta property="og:title" content="ChatLampBot 智慧燈多模語音互動機器人" />
   <meta property="og:description" content="ChatLampBot 智慧燈多模語音互動機器人" />
-  <meta property="og:image" content="{{ url_for('static', filename='favicon.png') }}" />
+  <meta property="og:image" content="{{ STATIC_URL }}/favicon.png" />
   <meta property="og:type" content="website" />
 
-  <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
-  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
-  <link rel="stylesheet" href="{{url_for('static', filename='css/light_style.css')}}" />
+  <link rel="icon" type="image/png" href="{{ STATIC_URL }}/favicon.png">
+  <link rel="manifest" href="{{ STATIC_URL }}/manifest.json">
+  <link rel="stylesheet" href="{{ STATIC_URL }}/css/light_style.css" />
 
 </head>
 
@@ -110,7 +110,7 @@
     const audioUrl = "{{ AUDIO_URL }}";
     const langs = ["Zh-Hant", "Ja", "En"];
   </script>
-  <script src="{{url_for('static', filename='js/light_main.js')}}"></script>
+  <script src="{{ STATIC_URL }}/js/light_main.js"></script>
 </body>
 
 </html>

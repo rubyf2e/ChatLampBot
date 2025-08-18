@@ -55,7 +55,14 @@ def index():
     AUDIO_URL = config["Base"]["AUDIO_URL"]
     API_URL = config["Base"]["API_URL"]
     WEBHOOK_URL = config["Base"]["WEBHOOK_URL"]
-    return render_template("index.html", AUDIO_URL=AUDIO_URL, API_URL=API_URL, WEBHOOK_URL=WEBHOOK_URL)
+    # 獲取部署 URL 作為靜態資源的基礎路徑
+    DEPLOY_URL = config["Deploy"]["URL"]
+    STATIC_URL = f"{DEPLOY_URL}/static"
+    return render_template("index.html", 
+                         AUDIO_URL=AUDIO_URL, 
+                         API_URL=API_URL, 
+                         WEBHOOK_URL=WEBHOOK_URL,
+                         STATIC_URL=STATIC_URL)
 
 @app.route("/api/light", methods=["POST"])
 def light():

@@ -1,4 +1,5 @@
 import requests
+import sys
 
 class LightService:
     WEBHOOK_URL = None
@@ -14,6 +15,7 @@ class LightService:
             requests.post(self.WEBHOOK_URL+"/webhook/notify_light_state", json=payload)
         except Exception as e:
             print(f"通知 SocketIO 失敗: {e}")
+            sys.stdout.flush()
     
 
 class LightState:

@@ -5,6 +5,7 @@ from flask import Flask, request
 from flask_socketio import SocketIO
 import requests
 import configparser
+import sys
 
 
 app = Flask(__name__)
@@ -33,6 +34,7 @@ def get_light_status():
             return "未知"
     except Exception as e:
         print(e)
+        sys.stdout.flush()
         return "錯誤"
     
 def toggle_light_state():
@@ -44,16 +46,19 @@ def toggle_light_state():
             return "未知"
     except Exception as e:
         print(e)
+        sys.stdout.flush()
         return "錯誤"
 
 @socketio.on('get_light_state')
 def handle_get_light_state():
     print("燈泡狀態")
+    sys.stdout.flush()
     notify_light_state()
     
 @socketio.on('toggle_light_state')
 def handle_toggle_light_state():
     print("燈泡狀態請求已處理")
+    sys.stdout.flush()
     toggle_light_state()
 
 
@@ -61,6 +66,7 @@ def handle_toggle_light_state():
 def notify_light_state(inputValue = '燈泡狀態請求已處理'):
     state = get_light_status()
     print("燈泡狀態請求已處理-"+state)
+    sys.stdout.flush()
     socketio.emit('light_state', {'state': state, 'inputValue': inputValue})
     
 if __name__ == "__main__":

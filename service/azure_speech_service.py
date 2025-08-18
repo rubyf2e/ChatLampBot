@@ -2,6 +2,7 @@ import azure.cognitiveservices.speech as speechsdk
 import librosa
 import uuid
 import os
+import sys
 
 class AzureSpeechService:
     config = None
@@ -44,8 +45,10 @@ class AzureSpeechService:
         elif result.reason == speechsdk.ResultReason.Canceled:
             cancellation_details = result.cancellation_details
             print("Speech synthesis canceled: {}".format(cancellation_details.reason))
+            sys.stdout.flush()
             if cancellation_details.reason == speechsdk.CancellationReason.Error:
                 print("Error details: {}".format(cancellation_details.error_details))
+                sys.stdout.flush()
                 
         return None
     

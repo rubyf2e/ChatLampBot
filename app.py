@@ -1,5 +1,6 @@
 import json 
 import configparser
+import sys
 from flask import Flask, request, abort, render_template
 from linebot.v3 import WebhookHandler
 from linebot.v3.exceptions import InvalidSignatureError
@@ -198,6 +199,7 @@ def translate_service_message_text(event):
             )
     except Exception as e:
         print(f"Error in message_text: {e}")
+        sys.stdout.flush()
         # 發送錯誤訊息給用戶
         with ApiClient(configuration) as api_client:
             line_bot_api = MessagingApi(api_client)

@@ -1,0 +1,14 @@
+[supervisord]
+nodaemon=true
+
+[program:main]
+command=gunicorn -k eventlet -w 1 -b 0.0.0.0:${PORT_CHATLAMPBOT} app:app
+directory=/app
+autostart=true
+autorestart=true
+
+[program:webhook]
+command=gunicorn -k eventlet -w 1 -b 0.0.0.0:${PORT_CHATLAMPBOT_WEBHOOK} app_webhook:app
+directory=/app
+autostart=true
+autorestart=true

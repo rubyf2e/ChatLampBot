@@ -12,6 +12,7 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 config = configparser.ConfigParser()
 config.read("config.ini")
 API_URL = config["Base"]["API_URL"]
+PORT_CHATLAMPBOT_WEBHOOK = config["Base"]["PORT_CHATLAMPBOT_WEBHOOK"]
 
 @app.route("/", methods=["GET"])
 def index():
@@ -63,7 +64,7 @@ def notify_light_state(inputValue = '燈泡狀態請求已處理'):
     socketio.emit('light_state', {'state': state, 'inputValue': inputValue})
     
 if __name__ == "__main__":
-    socketio.run(app, port=5004, debug=True, host='127.0.0.1')
+    socketio.run(app, port=PORT_CHATLAMPBOT_WEBHOOK, debug=True, host='127.0.0.1')
     
     
 import command.weather

@@ -4,6 +4,7 @@
 
 ```bash
 # 1. 建構並啟動所有服務
+docker-compose build --no-cache
 docker-compose up -d
 
 # 2. 查看服務狀態

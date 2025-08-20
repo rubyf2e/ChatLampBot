@@ -219,4 +219,4 @@ def translate_service_message_text(event):
             )
   
 if __name__ == "__main__":
-    app.run()
+    app.run(host='0.0.0.0', port=int(config["Base"]["PORT_CHATLAMPBOT"]), debug=bool(config["Base"]["FLASK_DEBUG"]))

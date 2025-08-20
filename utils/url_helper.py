@@ -27,7 +27,7 @@ class URLHelper:
         webhook_url = f"{protocol}://{domain}{webhook_port}{base_path}"
         
         return {
-            "WEBHOOK_URL": webhook_url,  # Socket.IO 連接用
+            "WEBHOOK_URL": f"{webhook_url}/webhook",  # Socket.IO 連接用
             "WEB_URL": main_url,         # 主頁面 URL
             "API_URL": f"{main_url}/api", # API 端點
             "AUDIO_URL": f"{main_url}/static/speech", # 音頻檔案

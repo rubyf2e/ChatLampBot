@@ -61,6 +61,7 @@ def index():
                         STATIC_URL=base_urls["STATIC_URL"],
                         AUDIO_URL=base_urls["AUDIO_URL"], 
                         API_URL=base_urls["API_URL"], 
+                        WEBHOOK_PATH_URL=base_urls["WEBHOOK_PATH_URL"], 
                         WEBHOOK_URL=base_urls["WEBHOOK_URL"])
 
 @app.route("/api/light", methods=["POST"])

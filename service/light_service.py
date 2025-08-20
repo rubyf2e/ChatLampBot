@@ -10,12 +10,13 @@ class LightService:
         url_helper = get_url_helper(config)
         base_urls = url_helper.get_base_urls()
         self.WEBHOOK_URL = base_urls["WEBHOOK_URL"]
+        self.BASE_PATH = base_urls["BASE_PATH"]
         
     # 當燈泡狀態改變時，主動推送給前端
     def notify_light_state(self, inputValue = "燈泡狀態改變"):
         try:
             payload = {"inputValue": inputValue} 
-            requests.post(self.WEBHOOK_URL+"/webhook/notify_light_state", json=payload)
+            requests.post(self.WEBHOOK_URL+self.BASE_PATH+"/webhook/notify_light_state", json=payload)
         except Exception as e:
             print(f"通知 SocketIO 失敗: {e}")
             sys.stdout.flush()

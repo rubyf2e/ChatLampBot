@@ -1,12 +1,15 @@
 import requests
 import sys
+from utils.url_helper import get_url_helper
 
 class LightService:
     WEBHOOK_URL = None
     
     def __init__(self, config):
         self.config = config
-        self.WEBHOOK_URL = config["Base"]["WEBHOOK_URL"]
+        url_helper = get_url_helper(config)
+        base_urls = url_helper.get_base_urls()
+        self.WEBHOOK_URL = base_urls["WEBHOOK_URL"]
         
     # 當燈泡狀態改變時，主動推送給前端
     def notify_light_state(self, inputValue = "燈泡狀態改變"):

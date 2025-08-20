@@ -25,10 +25,14 @@ from service.azure_text_analytics_service import AzureTextAnalyticsService
 from service.azure_analyze_conversation_service import AzureAnalyzeConversationService
 from service.light_chat_service import LightChatService
 from service.weather_service import WeatherService
+from utils.url_helper import get_url_helper
 
 
 config = configparser.ConfigParser()
 config.read("config.ini")
+
+# 初始化 URL 管理器
+url_helper = get_url_helper(config)
 
 app = Flask(__name__)
 UPLOAD_FOLDER = config["Base"]["UPLOAD_FOLDER"]
@@ -52,17 +56,12 @@ light_chat_service = LightChatService(azure_analyze_conversation_service, light_
 
 @app.route("/", methods=["GET"])
 def index():
-    AUDIO_URL = config["Base"]["AUDIO_URL"]
-    API_URL = config["Base"]["API_URL"]
-    WEBHOOK_URL = config["Base"]["WEBHOOK_URL"]
-    # 獲取部署 URL 作為靜態資源的基礎路徑
-    DEPLOY_URL = config["Deploy"]["URL"]
-    STATIC_URL = f"{DEPLOY_URL}/static"
+    base_urls = url_helper.get_base_urls()
     return render_template("index.html", 
-                         AUDIO_URL=AUDIO_URL, 
-                         API_URL=API_URL, 
-                         WEBHOOK_URL=WEBHOOK_URL,
-                         STATIC_URL=STATIC_URL)
+                        STATIC_URL=base_urls["STATIC_URL"],
+                        AUDIO_URL=base_urls["AUDIO_URL"], 
+                        API_URL=base_urls["API_URL"], 
+                        WEBHOOK_URL=base_urls["WEBHOOK_URL"])
 
 @app.route("/api/light", methods=["POST"])
 def light():
@@ -182,7 +181,8 @@ def translate_service_message_text(event):
         audio_duration = azure_speech_service.synthesize(translation_result, target_language)
         
         if audio_duration != None:
-            messages.append(AudioMessage(originalContentUrl=config["Deploy"]["URL"]+f"/static/speech_{target_language}.mp3", duration=audio_duration))
+            deploy_url = url_helper.get_deploy_url()
+            messages.append(AudioMessage(originalContentUrl=deploy_url+f"/static/speech_{target_language}.mp3", duration=audio_duration))
         
         return messages
     

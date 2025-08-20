@@ -6,13 +6,19 @@ from flask_socketio import SocketIO
 import requests
 import configparser
 import sys
+from utils.url_helper import get_url_helper
 
 
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
 config = configparser.ConfigParser()
 config.read("config.ini")
-API_URL = config["Base"]["API_URL"]
+
+# 初始化 URL 管理器
+url_helper = get_url_helper(config)
+base_urls = url_helper.get_base_urls()
+API_URL = base_urls["API_URL"]
+
 PORT_CHATLAMPBOT_WEBHOOK = config["Base"]["PORT_CHATLAMPBOT_WEBHOOK"]
 
 @app.route("/", methods=["GET"])

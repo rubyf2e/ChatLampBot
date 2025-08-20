@@ -20,6 +20,7 @@ base_urls = url_helper.get_base_urls()
 API_URL = base_urls["API_URL"]
 
 PORT_CHATLAMPBOT_WEBHOOK = config["Base"]["PORT_CHATLAMPBOT_WEBHOOK"]
+FLASK_DEBUG = config["Base"]["FLASK_DEBUG"]
 
 @app.route("/", methods=["GET"])
 def index():
@@ -76,7 +77,7 @@ def notify_light_state(inputValue = '燈泡狀態請求已處理'):
     socketio.emit('light_state', {'state': state, 'inputValue': inputValue})
     
 if __name__ == "__main__":
-    socketio.run(app, port=PORT_CHATLAMPBOT_WEBHOOK, debug=True, host='127.0.0.1')
+    socketio.run(app, port=PORT_CHATLAMPBOT_WEBHOOK, debug=FLASK_DEBUG, host='127.0.0.1')
     
     
 import command.weather

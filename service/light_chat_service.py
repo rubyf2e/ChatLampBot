@@ -8,15 +8,12 @@ class LightChatService:
     def analyze_conversation(self, user_input, chat_model):
         topIntent, entities = self.azure_analyze_conversation_service.analyze_conversation(user_input)
         
-        if len(entities) > 0:
-            if "extraInformation" in entities[0]:
-                result_entity = entities[0]['extraInformation'][0]['key']
-                
-                if result_entity == "開":
-                    self.light_state.turn_on(user_input)
-                elif result_entity == "關":
-                    self.light_state.turn_off(user_input) 
-                    
+        if topIntent:
+            if topIntent == "TurnOn":
+                self.light_state.turn_on()
+                result_entity = f"{self.light_state.get_state()}"
+            elif topIntent == "TurnOff":
+                self.light_state.turn_off() 
                 result_entity = f"{self.light_state.get_state()}"
             else:
                 result_entity = self.chat_service.chat(user_input, chat_model)

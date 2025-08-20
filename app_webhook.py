@@ -8,9 +8,6 @@ import configparser
 import sys
 from utils.url_helper import get_url_helper
 
-
-app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins="*")
 config = configparser.ConfigParser()
 config.read("config.ini")
 
@@ -18,9 +15,12 @@ config.read("config.ini")
 url_helper = get_url_helper(config)
 base_urls = url_helper.get_base_urls()
 API_URL = base_urls["API_URL"]
-
+DOMAIN = base_urls["DOMAIN"]
 PORT_CHATLAMPBOT_WEBHOOK = config["Base"]["PORT_CHATLAMPBOT_WEBHOOK"]
 FLASK_DEBUG = config["Base"]["FLASK_DEBUG"]
+
+app = Flask(__name__)
+socketio = SocketIO(app, cors_allowed_origins=DOMAIN)
 
 @app.route("/", methods=["GET"])
 def index():

@@ -32,7 +32,7 @@ class URLHelper:
             "WEB_URL": main_url,         # 主頁面 URL
             "API_URL": f"{main_url}/api", # API 端點
             "AUDIO_URL": f"{main_url}/static/speech", # 音頻檔案
-            "STATIC_URL": f"{main_url}/static"        # 靜態檔案
+            "STATIC_URL": f"{main_url}/static",        # 靜態檔案
             "DOMAIN": domain
         }
 

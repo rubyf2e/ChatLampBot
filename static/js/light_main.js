@@ -51,7 +51,11 @@ $(function () {
       $audio.attr("src", "");
       $audio.attr(
         "src",
-        audioUrl + "/speech_" + lang_name + ".mp3?a=" + Math.random()
+        audioUrl +
+          "/speech_" +
+          lang_name.toLowerCase() +
+          ".mp3?a=" +
+          Math.random()
       );
       $audio[0].load();
       $audio[0].play();

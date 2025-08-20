@@ -40,7 +40,7 @@ class AzureSpeechService:
         if result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
             librosa.load(path)
             audio_duration = round(librosa.get_duration(path=path) * 1000)
-            self.rename_file(filename, filename2)
+            self.rename_file(filename, filename2.lower())
             return audio_duration
         elif result.reason == speechsdk.ResultReason.Canceled:
             cancellation_details = result.cancellation_details

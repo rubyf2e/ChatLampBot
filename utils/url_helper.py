@@ -24,10 +24,11 @@ class URLHelper:
         webhook_port = ':' + webhook_port if webhook_port and main_port != '' else ''
 
         main_url = f"{protocol}://{domain}{main_port}{base_path}"
-        webhook_url = f"{protocol}://{domain}{webhook_port}{base_path}"
+        webhook_url = f"{protocol}://{domain}{webhook_port}"
         
         return {
-            "WEBHOOK_URL": f"{webhook_url}/webhook",  # Socket.IO 連接用
+            "WEBHOOK_URL": f"{webhook_url}",  # Socket.IO 連接用
+            "WEBHOOK_PATH_URL": f"{base_path}/webhook",  # Socket.IO 連接用
             "WEB_URL": main_url,         # 主頁面 URL
             "API_URL": f"{main_url}/api", # API 端點
             "AUDIO_URL": f"{main_url}/static/speech", # 音頻檔案

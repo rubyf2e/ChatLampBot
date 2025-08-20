@@ -105,7 +105,9 @@
   <script src="//unpkg.com/jquery"></script>
   <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
   <script>
-    const socket = io("{{ WEBHOOK_URL }}");
+    const socket = io("{{ WEBHOOK_URL }}", {
+      path: "{{ WEBHOOK_PATH_URL }}"
+    });
     const apiUrl = "{{ API_URL }}";
     const audioUrl = "{{ AUDIO_URL }}";
     const langs = ["Zh-Hant", "Ja", "En"];

@@ -20,7 +20,7 @@ class URLHelper:
         
         main_port = self.config.get("Base", "PORT_CHATLAMPBOT", fallback="5003")
         webhook_port = self.config.get("Base", "PORT_CHATLAMPBOT_WEBHOOK", fallback="5004")
-        main_port = ':' + main_port if main_port else ''
+        main_port = ':' + main_port if main_port and main_port != '80' else ''
         webhook_port = ':' + webhook_port if webhook_port and main_port != '' else ''
 
         main_url = f"{protocol}://{domain}{main_port}{base_path}"
